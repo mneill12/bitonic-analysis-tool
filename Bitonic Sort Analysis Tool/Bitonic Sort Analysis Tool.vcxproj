@@ -169,6 +169,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="sortingExecution.cpp" />
     <ClCompile Include="userInputFunctions.cpp" />
     <ClCompile Include="utilityFunctions.cpp" />
+    <ClCompile Include="workOutBatchInputs.cpp" />
     <ClCompile Include="writeToCSVFile.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +181,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <Text Include="multiStep.txt" />
+    <Text Include="textFileFormat.txt" />
     <Text Include="threadPerElementInputs.txt" />
     <Text Include="twoDPartition.txt" />
   </ItemGroup>

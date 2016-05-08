@@ -58,7 +58,7 @@ BatchArrayValues readBatchTextFiles(char* textFileString){
 	strcat(fileName, textFileString);
 	
 	FILE* file = fopen(fileName, "r");
-	char line[256];
+	char line[1000000];
 	char* amountString = "Amount";
 
 	while (fgets(line, sizeof(line), file)) {
@@ -75,6 +75,7 @@ BatchArrayValues readBatchTextFiles(char* textFileString){
 				pch = strtok(NULL, " ");
 
 				amountOfSorts = atoi(pch);
+				batchArrayValues.amountOfSorts = atoi(pch);
 
 				//give every input array enough memeory to hold required inputs 
 				batchArrayValues.blocks = (int*)malloc(amountOfSorts*sizeof(int));

@@ -9,6 +9,5 @@ void writeArrayAsCsvFile(char* filename, char* arrayState, int* array, int array
 void writeBlockElementCsvFile(int* values, char* arrayState, int threadCount, int deviceBlocks);
 void writeSuggestedBlockThreadConfigToCsv(int* suggestedThreads, int* suggestedBlocks, int combinationsCount);
 
-
 void incrementFileId(char* fileDirAndName);
 int fileExists(const char *fileName);

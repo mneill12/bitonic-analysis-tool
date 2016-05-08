@@ -13,15 +13,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sortingExecution.cpp" />
-    <ClCompile Include="userInputFunctions.cpp" />
-    <ClCompile Include="utilityFunctions.cpp" />
-    <ClCompile Include="writeToCSVFile.cpp" />
+    <ClCompile Include="workOutBatchInputs.cpp">
+      <Filter>Utility Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="utilityFunctions.cpp">
+      <Filter>Utility Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="writeToCSVFile.cpp">
+      <Filter>CSV</Filter>
+    </ClCompile>
+    <ClCompile Include="userInputFunctions.cpp">
+      <Filter>user Input Functions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sortingExecution.h" />
-    <ClInclude Include="userInputFunctions.h" />
-    <ClInclude Include="utilityFunctions.h" />
-    <ClInclude Include="writeToCSVFIle.h" />
     <ClInclude Include="allStepsInParallelKernel.cuh">
       <Filter>kernels</Filter>
     </ClInclude>
@@ -31,6 +37,15 @@
     <ClInclude Include="threadPerElementKernel.h">
       <Filter>kernels</Filter>
     </ClInclude>
+    <ClInclude Include="utilityFunctions.h">
+      <Filter>Utility Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="writeToCSVFIle.h">
+      <Filter>CSV</Filter>
+    </ClInclude>
+    <ClInclude Include="userInputFunctions.h">
+      <Filter>user Input Functions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="batchTextFiles">
@@ -38,6 +53,15 @@
     </Filter>
     <Filter Include="kernels">
       <UniqueIdentifier>{e26b1e14-ec41-47dd-b36c-68653df2c7f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CSV">
+      <UniqueIdentifier>{34dcaa3c-f90b-4e7f-9d60-a8220fc47c91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility Functions">
+      <UniqueIdentifier>{c8efa835-5d06-4bee-91db-0cb9b49fcc0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="user Input Functions">
+      <UniqueIdentifier>{85318cd8-2bff-4e30-b075-5031a4243d34}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +72,9 @@
       <Filter>batchTextFiles</Filter>
     </Text>
     <Text Include="twoDPartition.txt">
+      <Filter>batchTextFiles</Filter>
+    </Text>
+    <Text Include="textFileFormat.txt">
       <Filter>batchTextFiles</Filter>
     </Text>
   </ItemGroup>

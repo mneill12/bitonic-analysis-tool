@@ -11,3 +11,4 @@ void threadPerElement();
 void twoDimensionArrayPartition();
 void stepsInKenralSort();
 void runBatchOfSorts();
+void createGlobalBatchResultsFile();

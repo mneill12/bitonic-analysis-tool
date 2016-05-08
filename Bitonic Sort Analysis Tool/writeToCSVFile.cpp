@@ -150,6 +150,8 @@ void writeBlockElementCsvFile(int* values, char* arrayState, int threadCount, in
 
 }
 
+
+
 int fileExists(const char *fileName)
 {
 	FILE *file;

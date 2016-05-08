@@ -1,0 +1,4 @@
+//Each text file should be formated as follows
+
+Amount 3				"This tells the system how many sorts should be caried out for this text file"
+8 8 1					"Size of array, threads per blocks, blocks - This the paramter list for each sort. "

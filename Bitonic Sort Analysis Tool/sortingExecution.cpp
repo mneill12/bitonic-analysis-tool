@@ -13,6 +13,8 @@ int allOtherStepsThreadCount;
 int allOtherThreadCount;
 int stepOneThreadCount;
 
+FILE* batchResults;
+
 
 //Max times we cann run the process
 int executionCount;
@@ -164,7 +166,7 @@ void twoDimensionArrayPartition()
 
 		//Do Sort and time it
 		start = clock();
-		partitioned2dArrayBitonicSort(values, elementsToSort, stepOneThreadCount, stepOneThreadCount, allOtherStepsThreadCount);
+		partitioned2dArrayBitonicSort(values, elementsToSort, deviceBlocks, stepOneThreadCount, allOtherStepsThreadCount);
 		stop = clock();
 
 		time = getElapsedTime(start, stop);
@@ -351,12 +353,18 @@ int main(void){
 	else{
 		runBatchOfSorts();
 	
-		}
-	
+		}	
 }
 
 void runBatchOfSorts(){
 
+	//create and open the batch results csv file globally
+	createGlobalBatchResultsFile();
+
+	/*
+	For each text file we're going to itterate though them then run the sorts for the paramaters that are in the text files. 
+	Then write results to global csv file
+	*/
 	char* textFiles[3];
 	textFiles[0] = "multiStep.txt";
 	textFiles[1] = "twoDPartition.txt";
@@ -365,16 +373,27 @@ void runBatchOfSorts(){
 	clock_t start, stop;
 	printf("Fetching sort paramaters \n");
 
-	for (int sortIndex = 0; sortIndex < 3; sortIndex++){
+	int sortNumber = 1;
 
+	for (int sortIndex = 0; sortIndex < 3; sortIndex++){
+		//Write sort name to cvs file add space and columns
+		fprintf(batchResults, textFiles[sortIndex]);
+		fprintf(batchResults, "\n");
+		fprintf(batchResults, "State, Blocks, ThreadsPerBlock, Time, Elements,");
+		fprintf(batchResults, "\n");
+
+		//Get inputs for specific sort
 		BatchArrayValues batchArrayValues = readBatchTextFiles(textFiles[sortIndex]);
 
 		//Running sorts for paramaters in text file
-		int sizeOfElementArray = sizeof(batchArrayValues.elements);
-
-		for (int i = 0; i < sizeOfElementArray - 1; i++){
+		int sizeOfElementArray = batchArrayValues.amountOfSorts;
+	
+		for (int i = 0; i < sizeOfElementArray; i++){
 
 			//Allocate memory for the size of each array read in from the text file and create an unsorted array 
+			if (*batchArrayValues.elements == 67108864){
+				printf("fuck");
+			}
 			int* values = (int*)malloc(*batchArrayValues.elements*sizeof(int));
 			createUnsortedArray(values, *batchArrayValues.elements);
 
@@ -383,40 +402,55 @@ void runBatchOfSorts(){
 
 				//TODO Need to overlode these fucntions so we can pass in correct vars
 			case 0:
-				printf("Runing Steps in Kernel Sort \n");
-				allStepsInParallelBitonicSort((values, *batchArrayValues.elements, *batchArrayValues.blocks, *batchArrayValues.threads);
+				//printf("Runing Steps in Kernel Sort \n");
+				start = clock();
+				allStepsInParallelSetup(values, *batchArrayValues.elements, *batchArrayValues.blocks, *batchArrayValues.threads);
+				stop = clock();
 
 			case 1:
-				printf("Runing 2 d partition sort \n");
-				partitioned2dArrayBitonicSort(values, *batchArrayValues.elements, *batchArrayValues.blocks, *batchArrayValues.threads);
+				//printf("Runing 2 d partition sort \n");
+				start = clock();
+				partitioned2dArrayBitonicSort(values, *batchArrayValues.elements, *batchArrayValues.blocks, *batchArrayValues.threads, *batchArrayValues.threads/2);
+				stop = clock();
 
 			case 2:
-				printf("Runing thread per element sort \n");
+				//printf("Runing thread per element sort \n");
 				start = clock();
 				threadPerElementBitonicSort(values, *batchArrayValues.elements, *batchArrayValues.blocks, *batchArrayValues.threads);
 				stop = clock();
 
 			}
-
-			//Do Sort and time it
 		
-
 			time = getElapsedTime(start, stop);
 
 			if (isSorted(values, *batchArrayValues.elements)){
-				printf("sort %d Is Sorted \n", i);
+				fprintf(batchResults, "Sorted");
 			}
 			else{
-				printf("sort %d Is NOT Sorted \n", i);
+				fprintf(batchResults, "Not Sorted");
 			}
+
+			//fprintf(file, "Sorted, Blocks, ThreadsPerBlock, Elements, Time,")
+			//wrtie results of sort execution
+			fprintf(batchResults, ",%d ", *batchArrayValues.blocks);
+			fprintf(batchResults, ",%d ", *batchArrayValues.threads);
+			fprintf(batchResults, ",%.3f ", time);
+			fprintf(batchResults, ",%d", *batchArrayValues.elements);
+		
+
+			fprintf(batchResults, "\n");
 
 			//increment pointer arrays holding varaibles
 			batchArrayValues.elements++;
 			batchArrayValues.blocks++;
 			batchArrayValues.threads++;
 
+			//Write all batch results to text file
+
 			free(values);
 
+			printf("Sort Number %d", sortNumber);
+			sortNumber++;
 		}
 	}
 
@@ -434,4 +468,32 @@ void preExecution(){
 	values[6] = 3;
 
 	threadPerElementBitonicSort(values, 8, 1, 8);
+}
+
+void createGlobalBatchResultsFile(){
+
+	struct tm *tm;
+	time_t t;
+	char str_time[100];
+	char str_date[100];
+
+	t = time(NULL);
+	tm = localtime(&t);
+
+	strftime(str_time, sizeof(str_time), "-Time-%H-%M-%S", tm);
+	strftime(str_date, sizeof(str_date), "-Date-%d-%m-%Y", tm);
+
+	char* filename = "batchResults";
+
+	char fileDirAndName[120] = "C:/BitonicSortArrayCSVFiles/";
+	//Use array state as folder name
+	strcat(fileDirAndName, "batchResults");
+	strcat(fileDirAndName, "/");
+	strcat(fileDirAndName, filename);
+	strcat(fileDirAndName, str_date);
+	strcat(fileDirAndName, str_time);
+	strcat(fileDirAndName, ".csv");
+
+	batchResults = fopen(fileDirAndName, "w");
+
 }

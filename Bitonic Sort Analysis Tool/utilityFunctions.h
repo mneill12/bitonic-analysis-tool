@@ -12,6 +12,7 @@ struct BatchArrayValues{
 	int *elements;
 	int *threads;
 	int *blocks;
+	int amountOfSorts;
 };
 
 const int randMax = 10000;
