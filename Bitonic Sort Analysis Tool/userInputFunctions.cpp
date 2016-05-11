@@ -85,16 +85,16 @@ bool runSortAgain(){
 
 	int runAgain;
 
-	printf("Do you wish to run the sort? 1 for Yes 0 for No: ");
+	printf("Exit execution? 1 to exit any other key to continue ");
 	scanf_s("%d", &runAgain);
 
 	if (runAgain == 1){
-		printf("You have selected Yes\n");
+		printf("Exiting\n");
 		return true;
 	}
 
 	else{
-		printf("You have selected No\n");
+	
 		return false;
 	}
 }
@@ -145,7 +145,7 @@ blockAndThreadCounts getSuggestedThreadCounts(int elementcount){
 int selectTypeOfSort(){
 		
 	int sortId;
-
+	//print statement 
 	printf("Select which Sort you wish to run \n 1 for Multi Step  Bitonic \n 2 for Two dimension Partition Bitonic \n 3 for Thread Per Element Bitonic \n");
 	scanf_s("%d", &sortId);
 
@@ -155,7 +155,7 @@ bool selectedRunningType(){
 
 		int individual;
 
-		printf("Do you wish to run individual algorithms or pre set batch? \n Enter 1 for Indvidual or anyother key for batch ");
+		printf("Do you wish to run individual algorithms or pre set batch? \n1: to select an indvidual algorithm or any other key to run batch of inputs: ");
 		scanf_s("%d", &individual);
 
 		if (individual == 1){

@@ -8,4 +8,4 @@
 #include <cuda_runtime_api.h>
 
 __global__ void threadPerElementkernel(int *dev_values, int step, int phaseLength);
-void threadPerElementBitonicSort(int *values, int elementsToSort, int deviceBlocks, int threadsPerBlock);
+void threadPerElementBitonicSortSetup(int *values, int elementsToSort, int deviceBlocks, int threadsPerBlock);

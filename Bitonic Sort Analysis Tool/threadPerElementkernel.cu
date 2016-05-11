@@ -38,7 +38,7 @@ __global__ void threadPerElementkernel(int *dev_values, int step, int phaseLengt
 /*
 Main function call. Created array and calls stepskernel based of the size of the bitonic sequences and step.
 */
-void threadPerElementBitonicSort(int *values, int elementsToSort, int deviceBlocks, int threadsPerBlock)
+void threadPerElementBitonicSortSetup(int *values, int elementsToSort, int deviceBlocks, int threadsPerBlock)
 {
 	int *dev_values;
 	size_t size = elementsToSort* sizeof(int);

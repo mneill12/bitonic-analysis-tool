@@ -25,7 +25,7 @@ void threadPerElement()
 	executionCount = getMaxProcessCount();
 	int fixedExecutionCount = executionCount;
 
-	bool runSort = true;
+	bool exit = false;
 
 	//Pointers to store our results that we're writing to CSV files, allocate space entered buy the user
 	int* threadCounts = (int*)malloc(executionCount*sizeof(int));
@@ -37,8 +37,7 @@ void threadPerElement()
 	clock_t start, stop;
 	//Counter so we can assine values to the array in the execution loop
 
-	while (runSort && executionCount != 0){
-		runSort = runSortAgain();
+	while (executionCount != 0){
 		//Get thread, blocks and  element count
 
 		//Get total elements and suggested block thread configurations
@@ -66,7 +65,7 @@ void threadPerElement()
 
 		//Do Sort and time it
 		start = clock();
-		threadPerElementBitonicSort(values, elementsToSort, deviceBlocks, threadsPerBlock);
+		threadPerElementBitonicSortSetup(values, elementsToSort, deviceBlocks, threadsPerBlock);
 		stop = clock();
 
 		time = getElapsedTime(start, stop);
@@ -83,7 +82,7 @@ void threadPerElement()
 		else{
 
 			printf("Not Sorted \n");
-			arrayState = "unsorted";
+			arrayState = "failedToSort";
 			arrayStateChar = 'u';
 		}
 
@@ -106,11 +105,15 @@ void threadPerElement()
 		//Check again for user input
 
 		executionCount--;
+
+		exit = runSortAgain();
+
+		if (exit){ break; }
 	}
 
 	printf("Execution ended. Writing results to C:\BitonicSortArrayCSVFiles /n");
 
-	writeSortResultsToCsv(timeResults, "ParallelBitonicSort", arrayStates, threadCounts, allBlocks, fixedExecutionCount);
+	writeSortResultsToCsv(timeResults, "ParallelBitonicSort", arrayStates, threadCounts, allBlocks, fixedExecutionCount - executionCount );
 
 	getchar();
 }
@@ -122,7 +125,7 @@ void twoDimensionArrayPartition()
 	executionCount = getMaxProcessCount();
 	int fixedExecutionCount = executionCount;
 
-	bool runSort = true;
+	bool exit = false;
 
 	//Pointers to store our results that we're writing to CSV files, allocate space entered buy the user
 	int* threadCounts = (int*)malloc(executionCount*sizeof(int));
@@ -134,9 +137,8 @@ void twoDimensionArrayPartition()
 	clock_t start, stop;
 	//Counter so we can assine values to the array in the execution loop
 
-	while (runSort && executionCount != 0){
+	while (executionCount != 0){
 
-		runSort = runSortAgain();
 
 		//Get thread, blocks and  element count
 
@@ -183,7 +185,7 @@ void twoDimensionArrayPartition()
 		else{
 
 			printf("Not Sorted \n");
-			arrayState = "unsorted";
+			arrayState = "failedToSort";
 			arrayStateChar = 'u';
 		}
 
@@ -206,11 +208,15 @@ void twoDimensionArrayPartition()
 		//Check again for user input
 
 		executionCount--;
+
+		exit = runSortAgain();
+
+		if(exit){break;}
 	}
 
 	printf("Execution ended. Writing results to C:\BitonicSortArrayCSVFiles /n");
 
-	writeSortResultsToCsv(timeResults, "PartitionedArray2DBitonicSort", arrayStates, threadCounts, allBlocks, fixedExecutionCount);
+	writeSortResultsToCsv(timeResults, "PartitionedArray2DBitonicSort", arrayStates, threadCounts, allBlocks, fixedExecutionCount - executionCount);
 
 	getchar();
 
@@ -225,7 +231,7 @@ void stepsInKenralSort()
 	executionCount = getMaxProcessCount();
 	int fixedExecutionCount = executionCount;
 
-	bool runSort = true;
+	bool exit = false;
 
 	//Pointers to store our results that we're writing to CSV files, allocate space entered buy the user
 	int* threadCounts = (int*)malloc(executionCount*sizeof(int));
@@ -237,9 +243,8 @@ void stepsInKenralSort()
 	clock_t start, stop;
 	//Counter so we can assine values to the array in the execution loop
 
-	while (runSort && executionCount != 0){
+	while (executionCount != 0){
 
-		runSort = runSortAgain();
 
 		//Get thread, blocks and  element count
 
@@ -285,7 +290,7 @@ void stepsInKenralSort()
 		else{
 
 			printf("Not Sorted \n");
-			arrayState = "unsorted";
+			arrayState = "failedToSort";
 			arrayStateChar = 'u';
 		}
 
@@ -308,11 +313,14 @@ void stepsInKenralSort()
 		//Check again for user input
 
 		executionCount--;
+		exit = runSortAgain();
+
+		if (exit){ break; }
 	}
 
 	printf("Execution ended. Writing results to C:\BitonicSortArrayCSVFiles \n");
 
-	writeSortResultsToCsv(timeResults, "ParallelBitonicSort", arrayStates, threadCounts, allBlocks, fixedExecutionCount);
+	writeSortResultsToCsv(timeResults, "ParallelBitonicSort", arrayStates, threadCounts, allBlocks, fixedExecutionCount - executionCount);
 
 	getchar();
 }
@@ -339,14 +347,17 @@ int main(void){
 		case 1:
 			printf("Runing Steps in Kernel Sort \n");
 			stepsInKenralSort();
+			break;
 
 		case 2:
 			printf("Runing 2 d partition sort \n");
 			twoDimensionArrayPartition();
+			break;
 
 		case 3:
 			printf("Runing thread per element sort \n");
 			threadPerElement();
+			break;
 
 		}
 	}
@@ -379,7 +390,7 @@ void runBatchOfSorts(){
 		//Write sort name to cvs file add space and columns
 		fprintf(batchResults, textFiles[sortIndex]);
 		fprintf(batchResults, "\n");
-		fprintf(batchResults, "State, Blocks, ThreadsPerBlock, Time, Elements,");
+		fprintf(batchResults, "State, Blocks, ThreadsPerBlock, Elements, Time,");
 		fprintf(batchResults, "\n");
 
 		//Get inputs for specific sort
@@ -391,9 +402,6 @@ void runBatchOfSorts(){
 		for (int i = 0; i < sizeOfElementArray; i++){
 
 			//Allocate memory for the size of each array read in from the text file and create an unsorted array 
-			if (*batchArrayValues.elements == 67108864){
-				printf("fuck");
-			}
 			int* values = (int*)malloc(*batchArrayValues.elements*sizeof(int));
 			createUnsortedArray(values, *batchArrayValues.elements);
 
@@ -416,7 +424,7 @@ void runBatchOfSorts(){
 			case 2:
 				//printf("Runing thread per element sort \n");
 				start = clock();
-				threadPerElementBitonicSort(values, *batchArrayValues.elements, *batchArrayValues.blocks, *batchArrayValues.threads);
+				threadPerElementBitonicSortSetup(values, *batchArrayValues.elements, *batchArrayValues.blocks, *batchArrayValues.threads);
 				stop = clock();
 
 			}
@@ -427,15 +435,16 @@ void runBatchOfSorts(){
 				fprintf(batchResults, "Sorted");
 			}
 			else{
-				fprintf(batchResults, "Not Sorted");
+				fprintf(batchResults, "NotSorted");
 			}
 
 			//fprintf(file, "Sorted, Blocks, ThreadsPerBlock, Elements, Time,")
 			//wrtie results of sort execution
 			fprintf(batchResults, ",%d ", *batchArrayValues.blocks);
 			fprintf(batchResults, ",%d ", *batchArrayValues.threads);
-			fprintf(batchResults, ",%.3f ", time);
 			fprintf(batchResults, ",%d", *batchArrayValues.elements);
+			fprintf(batchResults, ",%.3f ", time);
+		
 		
 
 			fprintf(batchResults, "\n");
@@ -467,7 +476,7 @@ void preExecution(){
 	values[5] = 100;
 	values[6] = 3;
 
-	threadPerElementBitonicSort(values, 8, 1, 8);
+	threadPerElementBitonicSortSetup(values, 8, 1, 8);
 }
 
 void createGlobalBatchResultsFile(){
